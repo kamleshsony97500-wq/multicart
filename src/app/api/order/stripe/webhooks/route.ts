@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     if (event?.type === "checkout.session.completed") {
         const session = event.data.object
         await connectDB()
-        await orderModel.findById(session?.metadata?.orderId, {
+        await orderModel.findByIdAndUpdate(session?.metadata?.orderId, {
             isPaid: true
         });
 
