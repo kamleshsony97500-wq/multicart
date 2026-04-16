@@ -191,88 +191,112 @@ const Dashboard = () => {
 
 
         {/* charts in value show */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-6 mt-4">
-          <div className="bg-white/5 border border-white/10 p-4 rounded-xl h-75 sm:h-86 lg:h-100">
+         <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-6 mt-4">
+
+          {/* ================= VENDOR CHART ================= */}
+          <div className="bg-white/5 border border-white/10 p-4 rounded-xl h-113 flex flex-col">
+
             <h2 className="mb-4 text-lg font-semibold">
               Vendor-wise Orders
             </h2>
 
-            <Chart
-              type="bar"
-              height={450}
-              width="100%"
-              series={[
-                {
-                  name: "Orders",
-                  data: vendorOderGraph.map((item) => item.orders),
-                },
-              ]}
-              options={{
-                chart: {
-                  toolbar: { show: false },
-                  animations: {
-                    enabled: true,
-                    speed: 800,
+            <div className="flex-1 w-full">
+              <Chart
+                type="bar"
+                height={350}
+                width="100%"
+                series={[
+                  {
+                    name: "Orders",
+                    data: vendorOderGraph.map((item) => item.orders),
                   },
-                },
-
-                xaxis: {
-                  categories: vendorOderGraph.map((item) => item.vendor),
-                  labels: {
-                    rotate: -20,
-                    style: {
-                      fontSize: "10px",
+                ]}
+                options={{
+                  chart: {
+                    toolbar: { show: false },
+                    animations: {
+                      enabled: true,
+                      speed: 800,
                     },
                   },
-                },
 
-                yaxis: {
-                  labels: {
-                    style: {
-                      fontSize: "10px",
+                  xaxis: {
+                    categories: vendorOderGraph.map((item) => item.vendor),
+                    labels: {
+                      rotate: -20,
+                      style: {
+                        fontSize: "10px",
+                      },
                     },
                   },
-                },
 
-                colors: ["#3b82f6"],
-
-                plotOptions: {
-                  bar: {
-                    borderRadius: 6,
-                    columnWidth: "50%",
+                  yaxis: {
+                    labels: {
+                      style: {
+                        fontSize: "10px",
+                      },
+                    },
                   },
-                },
 
-                dataLabels: {
-                  enabled: false,
-                },
+                  colors: ["#3b82f6"],
 
-                grid: {
-                  strokeDashArray: 3,
-                  borderColor: "#ffffff20",
-                },
+                  plotOptions: {
+                    bar: {
+                      borderRadius: 6,
+                      columnWidth: "50%",
+                    },
+                  },
 
-                tooltip: {
-                  theme: "dark",
-                },
-              }}
-            />
+                  dataLabels: {
+                    enabled: false,
+                  },
+
+                  grid: {
+                    strokeDashArray: 3,
+                    borderColor: "#ffffff20",
+                  },
+
+                  tooltip: {
+                    theme: "dark",
+                  },
+                }}
+              />
+            </div>
           </div>
 
-          {/* one more chart add here */}
-          <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
+          {/* ================= PIE CHART ================= */}
+          <div className="bg-white/5 border border-white/10 p-4 rounded-xl h-113 flex flex-col">
+
             <h2 className="mb-2 text-lg font-semibold">
               Orders Status Distribution
             </h2>
+
+            {/* STATUS BOXES */}
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <StatusBox label="Delivered" value={deliveredOrders.length} color="text-green-400" />
-              <StatusBox label="Pending" value={remainingOrders.length} color="text-blue-400" />
-              <StatusBox label="Cancelled" value={cancelledOrders.length} color="text-red-400" />
-              <StatusBox label="Returned" value={returnedOrders.length} color="text-orange-400" />
+              <StatusBox
+                label="Delivered"
+                value={deliveredOrders.length}
+                color="text-green-400"
+              />
+              <StatusBox
+                label="Pending"
+                value={remainingOrders.length}
+                color="text-blue-400"
+              />
+              <StatusBox
+                label="Cancelled"
+                value={cancelledOrders.length}
+                color="text-red-400"
+              />
+              <StatusBox
+                label="Returned"
+                value={returnedOrders.length}
+                color="text-orange-400"
+              />
             </div>
 
-            {/* pie chart show here */}
-            <div className="h-55 sm:h-65">
+            {/* PIE CHART */}
+            <div className="flex-1 w-full flex items-center justify-center">
               <ReactApexChart
                 options={{
                   chart: {
@@ -292,10 +316,12 @@ const Dashboard = () => {
                 }}
                 series={orderPrgress.map((item) => item.value)}
                 type="pie"
-                height={300}
+                height={200}
               />
             </div>
+
           </div>
+
         </div>
 
 
