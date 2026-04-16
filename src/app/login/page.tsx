@@ -71,20 +71,26 @@ const SignIn = () => {
              />
 
            
-             <input type={showPassword ? "text" : "password"}
-             required
-             placeholder="Password"
-             value={password}
-             onChange={(e)=>setPassword(e.target.value)}
-             className="bg-white/20 relative placeholder:text-gray-400 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-3"
-             />
-             <button 
-             type="button"
-             onClick={() => setShowPassword(!showPassword)}
-             className="absolute right-12 top-45 transform -translate-y-1/2 text-gray-400 hover:text-white transition"
-             >
-               {showPassword ? <FaEye size={18}/> : <FaEyeSlash size={18}/> }
-             </button>
+             <div className="relative w-full">
+
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white/20 placeholder:text-gray-400 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-3 pr-10"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+              >
+                {showPassword ? <FaEye size={18} /> : <FaEyeSlash size={18} />}
+              </button>
+
+            </div>
 
 
       <motion.button
