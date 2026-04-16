@@ -125,70 +125,80 @@ const Dashboard = () => {
 
 
         {/* charts in value show */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-          <div className="bg-white/5 border border-white/10 p-4 rounded-xl h-70 sm:h-95">
-            <h2 className="mb-2 text-lg font-semibold">Orders by Date</h2>
+       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+         {/* ================= LINE CHART ================= */}
+          <div className="bg-white/5 border border-white/10 p-4 rounded-xl h-113 flex flex-col">
 
-            <ReactApexChart
-              type="line"
-              width="100%"
-              height={300}
-              series={[
-                {
-                  name: "Orders",
-                  data: orderByDate.map((d) => d.orders),
-                },
-              ]}
-              options={{
-                chart: {
-                  toolbar: { show: false },
-                  zoom: { enabled: false },
-                  background: "transparent",
-                },
-                theme: { mode: "dark" },
-                stroke: {
-                  curve: "smooth",
-                  width: 3,
-                },
-                xaxis: {
-                  categories: orderByDate.map((d) => d.date),
-                  labels: {
-                    rotate: -45,
-                    trim: true,   // ✅ IMPORTANT
-                    style: { fontSize: "10px" },
+            <h2 className="mb-2 text-lg font-semibold">
+              Orders by Date
+            </h2>
+
+            {/* chart wrapper fills remaining space */}
+            <div className="flex-1 w-full">
+              <ReactApexChart
+                type="line"
+                width="100%"
+                height={350}
+                series={[
+                  {
+                    name: "Orders",
+                    data: orderByDate.map((d) => d.orders),
                   },
-                },
-                yaxis: {
-                  labels: { style: { fontSize: "10px" } },
-                },
-                grid: {
-                  borderColor: "rgba(255,255,255,0.1)",
-                },
-                tooltip: {
-                  theme: "dark",
-                },
-              }}
-            />
+                ]}
+                options={{
+                  chart: {
+                    toolbar: { show: false },
+                    zoom: { enabled: false },
+                    background: "transparent",
+                  },
+                  theme: { mode: "dark" },
+                  stroke: {
+                    curve: "smooth",
+                    width: 3,
+                  },
+                  xaxis: {
+                    categories: orderByDate.map((d) => d.date),
+                    labels: {
+                      rotate: -45,
+                      trim: true,
+                      style: { fontSize: "10px" },
+                    },
+                  },
+                  yaxis: {
+                    labels: { style: { fontSize: "10px" } },
+                  },
+                  grid: {
+                    borderColor: "rgba(255,255,255,0.1)",
+                  },
+                  tooltip: {
+                    theme: "dark",
+                  },
+                }}
+              />
+            </div>
           </div>
 
-          {/* one more chart add here */}
-          <div className="bg-white/5 border mb-6 border-white/10 p-4 rounded-xl">
+          {/* ================= PIE CHART ================= */}
+          <div className="bg-white/5 border border-white/10 p-4 rounded-xl h-113 flex flex-col">
+
             <h2 className="mb-2 text-lg font-semibold">
               Orders Status Distribution
             </h2>
-            <div className="grid grid-cols-2 gap-3 mb-4">
+
+            {/* STATUS BOXES */}
+            <div className="grid grid-cols-2 gap-3 mb-3">
               <StatusBox label="Delivered" value={deliveredOrders.length} color="text-green-400" />
               <StatusBox label="Pending" value={remainingOrders.length} color="text-blue-400" />
               <StatusBox label="Cancelled" value={cancelledOrders.length} color="text-red-400" />
               <StatusBox label="Returned" value={returnedOrders.length} color="text-orange-400" />
             </div>
 
-            {/* pie chart show here */}
-            <div className="h-75 sm:h-65">
+            {/* PIE CHART CENTERED */}
+            <div className="flex-1 flex items-center justify-center">
               <ReactApexChart
                 type="pie"
                 width="100%"
-                height={300}
+                height={220}
                 series={orderPrgress.map((item) => item.value)}
                 options={{
                   labels: orderPrgress.map((item) => item.name),
