@@ -117,7 +117,7 @@ const Navbar = ({ user }: { user: IUser }) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.5 }}
-                    className="absolute right-0 mt-3 w-48 backdrop-blur-lg rounded-xl shadow-lg border border-[#f5f1f13c]">
+                     className="absolute md:right-0 -right-10 md:mt-3 mt-15 w-48 backdrop-blur-lg rounded-xl shadow-lg border border-[#f5f1f13c]">
                     <DropDownBtn Icon={AiOutlineUser} label="Profile"
                       onClick={() => { router.push("/profile"); setMenuOpen(false) }} />
 
