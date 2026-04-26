@@ -47,7 +47,7 @@ const Slider = () => {
     return () => clearInterval(interval)
   }, [])
   return (
-    <div className="relative w-full min-h-[90vh] mt-0 overflow-hidden bg-black text-white md:mt-15 pt-0 top-0">
+    <div className="relative w-screen min-h-screen mt-0 overflow-hidden bg-black text-white md:mt-15 pt-0 top-0">
       <AnimatePresence>
         <motion.div
           key={current}
