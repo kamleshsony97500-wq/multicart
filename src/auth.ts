@@ -1,41 +1,47 @@
-import NextAuth from "next-auth"
-import Credentials from "next-auth/providers/credentials"
-import connectDB from "./lib/connectDB"
+```typescript
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+import connectDB from "./lib/connectDB";
 import userModel from "./model/user.model";
 import bcrypt from "bcryptjs";
-import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    // Email and password login
     Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
 
       async authorize(credentials) {
+        if (
+          typeof credentials?.email !== "string" ||
+          typeof credentials?.password !== "string" ||
+          !credentials.email ||
+          !credentials.password
+        ) {
+          return null;
+        }
+
         await connectDB();
 
-        const email = credentials?.email as string;
-        const password = credentials?.password as string;
+        const user = await userModel.findOne({
+          email: credentials.email,
+        });
 
-        const user = await userModel.findOne({ email });
-
-        if (!user) {
-          throw new Error("No user found with this email");
+        if (!user || typeof user.password !== "string" || !user.password) {
+          return null;
         }
 
-        // ✅ FIX: ensure password exists and is string
-        if (!user.password || typeof user.password !== "string") {
-          throw new Error("Please login with Google");
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
 
         if (!isMatch) {
-          throw new Error("Incorrect password");
+          return null;
         }
 
         return {
@@ -44,68 +50,76 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           role: user.role,
         };
-      }
+      },
     }),
 
-
-    // Google provider for authentication using Google accounts //
+    // Google login
     Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-    })
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    }),
   ],
 
   callbacks: {
-
-    // google se sign in karne par user ko database me check karna hai, agar user exist nahi karta to usko create karna hai //
+    // Find or create the Google user in MongoDB
     async signIn({ user, account }) {
-      if (account?.provider == "google") {
+      if (account?.provider === "google") {
+        if (!user.email) {
+          return false;
+        }
+
         await connectDB();
-        let DBUser = await userModel.findOne({ email: user.email });
+
+        let DBUser = await userModel.findOne({
+          email: user.email,
+        });
+
         if (!DBUser) {
           DBUser = await userModel.create({
             name: user.name,
             email: user.email,
             image: user.image,
-          })
+          });
         }
+
         user.id = DBUser._id.toString();
         user.role = DBUser.role;
       }
-      return true
 
+      return true;
     },
 
-    jwt({ token, user }) {
+    // Store user information in the JWT
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.role = user.role;  ///for next-auth.ts for role errors
+        token.role = user.role;
       }
+
       return token;
     },
-    session({ session, token }) {
+
+    // Add user ID and role to the session
+    async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.email = token.email as string;
-        session.user.name = token.name as string;
-        session.user.role = token.role as string;  ///for next-auth.ts for role errors
+        session.user.role = token.role as string;
       }
+
       return session;
-    }
+    },
   },
 
   pages: {
     signIn: "/login",
-    error: "/login"
+    error: "/login",
   },
 
-  // ketane din tak session valid rahega, uske baad user ko dobara login karna padega //
   session: {
     strategy: "jwt",
-    maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days in milliseconds
+    maxAge: 10 * 24 * 60 * 60, // 10 days in seconds
   },
-  secret: process.env.AUTH_SECRET,
 
-})
+  secret: process.env.AUTH_SECRET,
+});
+```
